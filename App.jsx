@@ -7,12 +7,9 @@ import { LibraryScreen } from './screens/LibraryScreen';
 import { CurrentlyPlayingScreen } from './screens/CurrentlyPlayingScreen';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-export type RootStackParamList = {
-  Library: undefined;
-  CurrentlyPlaying: undefined;
-};
+ 
 
-const RootStack = createNativeStackNavigator<RootStackParamList>();
+const RootStack = createNativeStackNavigator();
 
 export default function App() {
   return (
