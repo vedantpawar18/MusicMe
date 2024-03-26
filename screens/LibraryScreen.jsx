@@ -6,47 +6,39 @@ import {
   StyleSheet,
   SafeAreaView,
   FlatList,
+  Image,
 } from "react-native";
-import { getAll } from "react-native-get-music-files";
 
 export function LibraryScreen() {
   const navigation = useNavigation();
-  const [songs, setSongs] = useState([]);
-  console.log("songs", songs);
-
+  const [stations, setStations] = useState([]);
+  
   useEffect(() => {
-    getAll({
-      blured: true,
-      artist: true,
-      duration: true,
-      genre: true,
-      title: true,
-      cover: true,
-      minimumSongDuration: 100,
-    })
-      .then((musicFiles) => {
-        setSongs(musicFiles);
+    fetch("https://musicapi.x007.workers.dev/search?q=Pathaan&searchEngine=gaama")
+      .then((response) => response.json())
+      .then((data) => {
+        setStations(data.response);  
       })
       .catch((error) => {
-        console.log("Error fetching music files:", error);
+        console.log("Error fetching stations:", error);
       });
   }, []);
-  
 
-  const renderSongItem = ({ item }) => (
+  const renderStationItem = ({ item }) => (
     <TouchableOpacity
-      style={styles.songItem}
-      onPress={() => navigation.navigate("CurrentlyPlaying", { song: item })}
+      style={styles.stationItem}
+      onPress={() => navigation.navigate("CurrentlyPlaying", { station: item })}
     >
-      <Text>{item.title}</Text>
+      <Image source={{ uri: item.img }} style={styles.image} />
+      <Text style={styles.title}>{item.title}</Text>
     </TouchableOpacity>
   );
 
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={songs}
-        renderItem={renderSongItem}
+        data={stations}
+        renderItem={renderStationItem}
         keyExtractor={(item, index) => index.toString()}  
       />
     </SafeAreaView>
@@ -56,11 +48,24 @@ export function LibraryScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#F5F5F5",
   },
-  songItem: {
-    padding: 10,
+  stationItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 15,
     borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
+    borderBottomColor: "#E0E0E0",
+  },
+  image: {
+    width: 60,
+    height: 60,
+    marginRight: 15,
+    borderRadius: 8,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#000",
   },
 });
